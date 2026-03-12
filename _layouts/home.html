@@ -3,60 +3,54 @@ layout: default
 ---
 {% assign ordered_volumes = site.data.volumes | sort: "order" %}
 {% assign ordered_chapters = site.chapters | sort: "book_order" %}
+{% assign first_chapter = ordered_chapters | first %}
 
-<section class="hero-card">
-  <p class="eyebrow">Manifesto Book</p>
-  <h1>{{ page.hero_title | default: site.title }}</h1>
-  <p class="hero-deck">{{ page.hero_deck | default: site.description }}</p>
-  <div class="hero-meta">
-    <span>Markdown-first</span>
-    <span>GitHub Pages ready</span>
-    <span>{{ ordered_chapters | size }} chapters</span>
-  </div>
-</section>
-
-<section class="home-grid">
-  <div class="home-main">
-    <article class="paper-card prose">
-      {{ content }}
-    </article>
-
-    <section class="paper-card">
-      <div class="section-heading">
-        <p class="eyebrow">Volumes</p>
-        <h2>全书结构</h2>
+<div class="home-shell">
+  <section class="home-hero">
+    <p class="eyebrow">Manifesto Book</p>
+    <h1>{{ page.hero_title | default: site.title }}</h1>
+    <p class="hero-deck">{{ page.hero_deck | default: site.description }}</p>
+    <div class="hero-meta">
+      <span>{{ ordered_volumes | size }} 卷结构</span>
+      <span>{{ ordered_chapters | size }} 篇章节</span>
+      <span>Markdown 维护</span>
+    </div>
+    {% if first_chapter %}
+      <div class="hero-actions">
+        <a class="primary-action" href="{{ first_chapter.url | relative_url }}">从第一章开始</a>
+        <span class="home-note">首页保留导言，完整目录交给左侧导航。</span>
       </div>
-      <div class="volume-grid">
-        {% for volume in ordered_volumes %}
-          {% assign volume_chapters = site.chapters | where: "volume", volume.id | sort: "order" %}
-          <article class="volume-card">
+    {% endif %}
+  </section>
+
+  <article class="paper-card prose">
+    {{ content }}
+  </article>
+
+  <section class="paper-card" id="structure">
+    <div class="section-heading">
+      <p class="eyebrow">Volumes</p>
+      <h2>全书结构</h2>
+    </div>
+    <div class="volume-list">
+      {% for volume in ordered_volumes %}
+        {% assign volume_chapters = site.chapters | where: "volume", volume.id | sort: "order" %}
+        {% assign volume_first = volume_chapters | first %}
+        <article class="volume-card">
+          <div class="volume-card-main">
             <p class="volume-label">{{ volume.label }}</p>
             <h3>{{ volume.title }}</h3>
             <p class="volume-subtitle">{{ volume.title_en }}</p>
             <p class="volume-description">{{ volume.description }}</p>
+          </div>
+          <div class="volume-card-meta">
             <p class="volume-count">{{ volume_chapters | size }} 篇章节</p>
-          </article>
-        {% endfor %}
-      </div>
-    </section>
-  </div>
-
-  <aside class="home-rail">
-    <section class="paper-card rail-card">
-      <div class="section-heading">
-        <p class="eyebrow">Reading Now</p>
-        <h2>章节入口</h2>
-      </div>
-      <div class="chapter-card-list">
-        {% for chapter in ordered_chapters %}
-          <a class="chapter-card" href="{{ chapter.url | relative_url }}">
-            <span class="chapter-card-order">{{ chapter.chapter_label }}</span>
-            <strong>{{ chapter.title }}</strong>
-            <span class="chapter-card-subtitle">{{ chapter.title_en }}</span>
-            <span class="chapter-card-description">{{ chapter.description }}</span>
-          </a>
-        {% endfor %}
-      </div>
-    </section>
-  </aside>
-</section>
+            {% if volume_first %}
+              <a class="subtle-link" href="{{ volume_first.url | relative_url }}">从{{ volume_first.chapter_label }}开始</a>
+            {% endif %}
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  </section>
+</div>

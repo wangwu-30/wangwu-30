@@ -8,28 +8,40 @@
     <meta name="description" content="{{ meta_description | strip_html | strip_newlines | escape }}">
     <link rel="stylesheet" href="{{ '/assets/css/site.css' | relative_url }}">
   </head>
-  <body>
+  <body class="page-{{ page.layout | default: 'default' | slugify }}{% if page.url == '/' %} is-home{% endif %}">
     {% assign ordered_volumes = site.data.volumes | sort: "order" %}
+    {% assign total_chapters = site.chapters | size %}
     <header class="site-header">
-      <a class="brand" href="{{ '/' | relative_url }}">
-        <span class="brand-mark">A</span>
-        <span class="brand-copy">
-          <strong>{{ site.title }}</strong>
-          <span>{{ site.tagline | default: site.description }}</span>
-        </span>
-      </a>
+      <div class="site-header-inner">
+        <a class="brand" href="{{ '/' | relative_url }}">
+          <span class="brand-mark">A</span>
+          <span class="brand-copy">
+            <strong>{{ site.title }}</strong>
+            <span>{{ site.tagline | default: site.description }}</span>
+          </span>
+        </a>
+
+        <div class="site-header-meta" aria-label="站点概览">
+          <span>{{ ordered_volumes | size }} 卷</span>
+          <span>{{ total_chapters }} 章</span>
+          {% if page.chapter_label %}
+            <span>{{ page.chapter_label }}</span>
+          {% endif %}
+        </div>
+      </div>
     </header>
 
     <div class="site-frame">
       <aside class="sidebar">
         <div class="sidebar-intro">
-          <p class="eyebrow">Book Map</p>
-          <h2>目录</h2>
-          <p>以卷为纲，以章为文。每一页都是可独立阅读的长文。</p>
+          <p class="eyebrow">Navigation</p>
+          <h2>Book Contents</h2>
+          <p>{{ ordered_volumes | size }} 卷结构，{{ total_chapters }} 篇长文，按卷组织，按章阅读。</p>
         </div>
 
         <a class="sidebar-home-link{% if page.url == '/' %} is-active{% endif %}" href="{{ '/' | relative_url }}">
-          书籍首页
+          <span>书籍首页</span>
+          <span class="sidebar-home-link-note">Overview</span>
         </a>
 
         <nav class="sidebar-nav" aria-label="章节目录">
@@ -47,6 +59,7 @@
                 <span class="sidebar-group-label">{{ volume.label }}</span>
                 <span class="sidebar-group-title">{{ volume.title }}</span>
                 <span class="sidebar-group-subtitle">{{ volume.title_en }}</span>
+                <span class="sidebar-group-meta">{{ volume_chapters | size }} 篇章节</span>
               </summary>
               <ol class="chapter-list">
                 {% for chapter in volume_chapters %}
