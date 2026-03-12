@@ -42,21 +42,43 @@ layout: default
     {{ content }}
   </section>
 
-  <nav class="chapter-nav" aria-label="章节导航">
+  {% assign nav_state = "" %}
+  {% if previous_chapter and next_chapter %}
+    {% assign nav_state = " has-both" %}
+  {% elsif previous_chapter %}
+    {% assign nav_state = " has-prev-only" %}
+  {% elsif next_chapter %}
+    {% assign nav_state = " has-next-only" %}
+  {% endif %}
+
+  <section class="chapter-nav-wrap">
+    <div class="chapter-nav-header">
+      <p class="eyebrow">Continue Reading</p>
+      <h2>继续阅读</h2>
+    </div>
+
+    <nav class="chapter-nav{{ nav_state }}" aria-label="章节导航">
     {% if previous_chapter %}
-      <a class="chapter-nav-card" href="{{ previous_chapter.url | relative_url }}">
-        <span class="chapter-nav-label">上一篇</span>
-        <strong>{{ previous_chapter.chapter_label }}：{{ previous_chapter.title }}</strong>
-        <span>{{ previous_chapter.title_en }}</span>
+      <a class="chapter-nav-card is-prev" href="{{ previous_chapter.url | relative_url }}">
+        <span class="chapter-nav-direction" aria-hidden="true">←</span>
+        <div class="chapter-nav-copy">
+          <span class="chapter-nav-label">上一篇</span>
+          <strong>{{ previous_chapter.chapter_label }}：{{ previous_chapter.title }}</strong>
+          <span>{{ previous_chapter.title_en }}</span>
+        </div>
       </a>
     {% endif %}
 
     {% if next_chapter %}
-      <a class="chapter-nav-card next" href="{{ next_chapter.url | relative_url }}">
-        <span class="chapter-nav-label">下一篇</span>
-        <strong>{{ next_chapter.chapter_label }}：{{ next_chapter.title }}</strong>
-        <span>{{ next_chapter.title_en }}</span>
+      <a class="chapter-nav-card is-next" href="{{ next_chapter.url | relative_url }}">
+        <div class="chapter-nav-copy">
+          <span class="chapter-nav-label">下一篇</span>
+          <strong>{{ next_chapter.chapter_label }}：{{ next_chapter.title }}</strong>
+          <span>{{ next_chapter.title_en }}</span>
+        </div>
+        <span class="chapter-nav-direction" aria-hidden="true">→</span>
       </a>
     {% endif %}
-  </nav>
+    </nav>
+  </section>
 </article>

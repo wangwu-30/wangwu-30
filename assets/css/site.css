@@ -105,7 +105,6 @@ a {
 
 .site-header-meta span,
 .hero-meta span,
-.volume-count,
 .chapter-meta span,
 .chapter-nav-label {
   display: inline-flex;
@@ -117,10 +116,6 @@ a {
   color: var(--ink-soft);
   font-size: 0.78rem;
   line-height: 1.2;
-}
-
-.volume-count {
-  margin: 0;
 }
 
 .site-frame {
@@ -158,7 +153,6 @@ a {
 
 .sidebar-intro h2,
 .section-heading h2,
-.volume-card h3,
 .chapter-article h1,
 .chapter-nav-card strong,
 .home-hero h1 {
@@ -469,72 +463,6 @@ a {
   border-top: 1px solid var(--line);
 }
 
-.volume-list {
-  display: grid;
-  gap: 0;
-}
-
-.volume-card {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 1rem;
-  padding: 1rem 0;
-  border-top: 1px solid var(--line);
-}
-
-.volume-card:first-child {
-  padding-top: 0;
-  border-top: 0;
-}
-
-.volume-card-main {
-  min-width: 0;
-}
-
-.volume-label {
-  margin: 0 0 0.28rem;
-  color: var(--ink-faint);
-  font-size: 0.8rem;
-  font-weight: 650;
-  letter-spacing: 0.02em;
-}
-
-.volume-card h3 {
-  font-size: 1.08rem;
-  font-weight: 650;
-  letter-spacing: -0.02em;
-}
-
-.volume-subtitle {
-  margin: 0.2rem 0 0;
-  font-size: 0.9rem;
-}
-
-.volume-description {
-  margin: 0.68rem 0 0;
-  max-width: 44rem;
-  color: var(--ink-soft);
-  line-height: 1.72;
-}
-
-.volume-card-meta {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 0.8rem;
-  white-space: nowrap;
-}
-
-.subtle-link {
-  color: var(--accent);
-  font-size: 0.9rem;
-  font-weight: 620;
-}
-
-.subtle-link:hover {
-  text-decoration: underline;
-}
-
 .chapter-article {
   max-width: 920px;
   padding: 1.55rem 1.8rem;
@@ -596,32 +524,65 @@ a {
   box-shadow: none;
 }
 
+.chapter-nav-wrap {
+  margin-top: 2rem;
+  padding-top: 1.4rem;
+  border-top: 1px solid var(--line);
+}
+
+.chapter-nav-header {
+  margin-bottom: 0.9rem;
+}
+
+.chapter-nav-header h2 {
+  margin: 0;
+  font-family: var(--display-font);
+  font-size: 1.2rem;
+  font-weight: 650;
+  letter-spacing: -0.03em;
+}
+
 .chapter-nav {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.9rem;
-  margin-top: 1.8rem;
-  padding-top: 1.25rem;
-  border-top: 1px solid var(--line);
+}
+
+.chapter-nav.has-prev-only,
+.chapter-nav.has-next-only {
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .chapter-nav-card {
-  display: grid;
-  gap: 0.3rem;
-  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.05rem 1.1rem;
   border: 1px solid var(--line);
   border-radius: 0.95rem;
-  background: var(--surface-soft);
-  transition: background-color 180ms ease, border-color 180ms ease;
+  background: var(--surface);
+  transition: background-color 180ms ease, border-color 180ms ease, transform 180ms ease;
 }
 
 .chapter-nav-card:hover {
   border-color: var(--line-strong);
-  background: var(--surface);
+  background: var(--surface-soft);
+  transform: translateY(-1px);
 }
 
-.chapter-nav-card.next {
+.chapter-nav-card.is-next {
   text-align: right;
+}
+
+.chapter-nav-copy {
+  display: grid;
+  gap: 0.26rem;
+  min-width: 0;
+}
+
+.chapter-nav-card.is-next .chapter-nav-copy {
+  justify-items: end;
 }
 
 .chapter-nav-card strong {
@@ -630,9 +591,22 @@ a {
   letter-spacing: -0.01em;
 }
 
-.chapter-nav-card span:last-child {
+.chapter-nav-copy span:last-child {
   color: var(--ink-soft);
   font-size: 0.84rem;
+}
+
+.chapter-nav-direction {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: var(--surface-muted);
+  color: var(--ink-soft);
+  font-size: 1rem;
 }
 
 .site-footer {
@@ -694,20 +668,20 @@ a {
     font-size: clamp(2rem, 10vw, 2.65rem);
   }
 
-  .volume-card {
-    grid-template-columns: 1fr;
-  }
-
-  .volume-card-meta {
-    align-items: flex-start;
-    white-space: normal;
-  }
-
   .chapter-nav {
     grid-template-columns: 1fr;
   }
 
-  .chapter-nav-card.next {
+  .chapter-nav-card.is-next {
     text-align: left;
+  }
+
+  .chapter-nav-card,
+  .chapter-nav-card.is-next {
+    justify-content: flex-start;
+  }
+
+  .chapter-nav-card.is-next .chapter-nav-copy {
+    justify-items: start;
   }
 }

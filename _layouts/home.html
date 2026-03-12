@@ -1,7 +1,6 @@
 ---
 layout: default
 ---
-{% assign ordered_volumes = site.data.volumes | sort: "order" %}
 {% assign ordered_chapters = site.chapters | sort: "book_order" %}
 {% assign first_chapter = ordered_chapters | first %}
 
@@ -26,31 +25,4 @@ layout: default
   <article class="paper-card prose">
     {{ content }}
   </article>
-
-  <section class="paper-card" id="structure">
-    <div class="section-heading">
-      <p class="eyebrow">Volumes</p>
-      <h2>全书结构</h2>
-    </div>
-    <div class="volume-list">
-      {% for volume in ordered_volumes %}
-        {% assign volume_chapters = site.chapters | where: "volume", volume.id | sort: "order" %}
-        {% assign volume_first = volume_chapters | first %}
-        <article class="volume-card">
-          <div class="volume-card-main">
-            <p class="volume-label">{{ volume.label }}</p>
-            <h3>{{ volume.title }}</h3>
-            <p class="volume-subtitle">{{ volume.title_en }}</p>
-            <p class="volume-description">{{ volume.description }}</p>
-          </div>
-          <div class="volume-card-meta">
-            <p class="volume-count">{{ volume_chapters | size }} 篇章节</p>
-            {% if volume_first %}
-              <a class="subtle-link" href="{{ volume_first.url | relative_url }}">从{{ volume_first.chapter_label }}开始</a>
-            {% endif %}
-          </div>
-        </article>
-      {% endfor %}
-    </div>
-  </section>
 </div>
