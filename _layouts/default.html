@@ -8,81 +8,89 @@
     <meta name="description" content="{{ meta_description | strip_html | strip_newlines | escape }}">
     <link rel="stylesheet" href="{{ '/assets/css/site.css' | relative_url }}">
   </head>
-  <body class="page-{{ page.layout | default: 'default' | slugify }}{% if page.url == '/' %} is-home{% endif %}">
+  {% assign current_section = page.section | default: "site" %}
+  {% assign show_book_sidebar = false %}
+  {% if current_section == "book" %}
+    {% assign show_book_sidebar = true %}
+  {% endif %}
+  <body class="section-{{ current_section }} page-{{ page.layout | default: 'default' | slugify }}">
     {% assign ordered_volumes = site.data.volumes | sort: "order" %}
-    {% assign total_chapters = site.chapters | size %}
     <header class="site-header">
       <div class="site-header-inner">
         <a class="brand" href="{{ '/' | relative_url }}">
           <span class="brand-mark">A</span>
           <span class="brand-copy">
             <strong>{{ site.title }}</strong>
-            <span>{{ site.tagline | default: site.description }}</span>
           </span>
         </a>
 
-        <div class="site-header-meta" aria-label="站点概览">
-          <span>{{ ordered_volumes | size }} 卷</span>
-          <span>{{ total_chapters }} 章</span>
-          {% if page.chapter_label %}
-            <span>{{ page.chapter_label }}</span>
-          {% endif %}
-        </div>
+        <nav class="site-primary-nav" aria-label="主导航">
+          <a class="primary-nav-link{% if current_section == 'home' %} is-active{% endif %}" href="{{ '/' | relative_url }}">首页</a>
+          <a class="primary-nav-link{% if current_section == 'book' %} is-active{% endif %}" href="{{ '/book/' | relative_url }}">书</a>
+          <a class="primary-nav-link{% if current_section == 'blog' %} is-active{% endif %}" href="{{ '/blog/' | relative_url }}">Blog</a>
+        </nav>
       </div>
     </header>
 
-    <div class="site-frame">
-      <aside class="sidebar">
-        <div class="sidebar-intro">
-          <p class="eyebrow">Navigation</p>
-          <h2>Book Contents</h2>
-          <p>{{ ordered_volumes | size }} 卷结构，{{ total_chapters }} 篇长文，按卷组织，按章阅读。</p>
+    {% if show_book_sidebar %}
+      <div class="site-frame">
+        <aside class="sidebar">
+          <div class="sidebar-intro">
+            <p class="eyebrow">The Book</p>
+            <h2>数字文明重构宣言</h2>
+            <p>按卷与章节继续阅读这本书。</p>
+          </div>
+
+          <a class="sidebar-home-link{% if page.url == '/book/' %} is-active{% endif %}" href="{{ '/book/' | relative_url }}">
+            <span>本书导言</span>
+            <span class="sidebar-home-link-note">Start here</span>
+          </a>
+
+          <nav class="sidebar-nav" aria-label="章节目录">
+            {% for volume in ordered_volumes %}
+              {% assign volume_chapters = site.chapters | where: "volume", volume.id | sort: "order" %}
+              {% assign open_group = false %}
+              {% if page.volume == volume.id %}
+                {% assign open_group = true %}
+              {% endif %}
+              {% if page.url == '/book/' and forloop.first %}
+                {% assign open_group = true %}
+              {% endif %}
+              <details class="sidebar-group" {% if open_group %}open{% endif %}>
+                <summary>
+                  <span class="sidebar-group-label">{{ volume.label }}</span>
+                  <span class="sidebar-group-title">{{ volume.title }}</span>
+                  <span class="sidebar-group-subtitle">{{ volume.title_en }}</span>
+                </summary>
+                <ol class="chapter-list">
+                  {% for chapter in volume_chapters %}
+                    <li>
+                      <a class="chapter-link{% if chapter.url == page.url %} is-active{% endif %}" href="{{ chapter.url | relative_url }}">
+                        <span>{{ chapter.chapter_label }}：{{ chapter.title }}</span>
+                        <span class="chapter-link-subtitle">{{ chapter.title_en }}</span>
+                      </a>
+                    </li>
+                  {% endfor %}
+                </ol>
+              </details>
+            {% endfor %}
+          </nav>
+        </aside>
+
+        <main class="content-area">
+          {{ content }}
+        </main>
+      </div>
+    {% else %}
+      <main class="site-main">
+        <div class="content-shell{% if page.content_width == 'wide' %} content-shell--wide{% endif %}">
+          {{ content }}
         </div>
-
-        <a class="sidebar-home-link{% if page.url == '/' %} is-active{% endif %}" href="{{ '/' | relative_url }}">
-          <span>书籍首页</span>
-          <span class="sidebar-home-link-note">Overview</span>
-        </a>
-
-        <nav class="sidebar-nav" aria-label="章节目录">
-          {% for volume in ordered_volumes %}
-            {% assign volume_chapters = site.chapters | where: "volume", volume.id | sort: "order" %}
-            {% assign open_group = false %}
-            {% if page.volume == volume.id %}
-              {% assign open_group = true %}
-            {% endif %}
-            {% if page.url == '/' and forloop.first %}
-              {% assign open_group = true %}
-            {% endif %}
-            <details class="sidebar-group" {% if open_group %}open{% endif %}>
-              <summary>
-                <span class="sidebar-group-label">{{ volume.label }}</span>
-                <span class="sidebar-group-title">{{ volume.title }}</span>
-                <span class="sidebar-group-subtitle">{{ volume.title_en }}</span>
-                <span class="sidebar-group-meta">{{ volume_chapters | size }} 篇章节</span>
-              </summary>
-              <ol class="chapter-list">
-                {% for chapter in volume_chapters %}
-                  <li>
-                    <a class="chapter-link{% if chapter.url == page.url %} is-active{% endif %}" href="{{ chapter.url | relative_url }}">
-                      <span>{{ chapter.chapter_label }}：{{ chapter.title }}</span>
-                      <span class="chapter-link-subtitle">{{ chapter.title_en }}</span>
-                    </a>
-                  </li>
-                {% endfor %}
-              </ol>
-            </details>
-          {% endfor %}
-        </nav>
-      </aside>
-
-      <main class="content-area">
-        {{ content }}
       </main>
-    </div>
+    {% endif %}
 
     <footer class="site-footer">
-      <p>Markdown-first publishing for longform writing · {{ site.time | date: "%Y" }}</p>
+      <p>Writing on software, systems, and digital civilization.</p>
     </footer>
   </body>
 </html>

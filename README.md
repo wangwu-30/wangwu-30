@@ -1,12 +1,16 @@
 # Archē & The Weave
 
-一个为 GitHub Pages 准备的 Jekyll 书籍站点模板：内容用 Markdown 维护，展示形态介于博客与书之间。
+一个为 GitHub Pages 准备的 Jekyll 写作站点：既可以维护一本按卷章展开的书，也可以持续发布按时间更新的 blog。
 
 ## 目录结构
 
-- `_chapters/`：正文章节，每篇都是一个独立 Markdown 文件
+- `index.md`：站点首页
+- `book.md`：书籍导言页
+- `blog.md`：Blog 列表页
+- `_chapters/`：书的正文章节，每篇都是一个独立 Markdown 文件
+- `_posts/`：Blog 文章，使用 Jekyll 标准日期文件名
 - `_data/volumes.yml`：卷的信息与顺序
-- `_layouts/`：首页与章节页布局
+- `_layouts/`：首页、书页、章节页、blog 页布局
 - `assets/css/site.css`：站点视觉样式
 - `.github/workflows/pages.yml`：GitHub Pages 自动发布工作流
 
@@ -36,6 +40,31 @@
 ```
 
 然后把章节的 `volume` 指向这个 `id`。
+
+## 如何新增一篇 Blog
+
+在 `_posts/` 目录里新建文件，命名格式如下：
+
+```text
+YYYY-MM-DD-your-slug.md
+```
+
+例如：
+
+```text
+2026-03-12-notes-on-writing-systems.md
+```
+
+文件顶部最少只需要：
+
+```md
+---
+title: "文章标题"
+description: "可选摘要"
+---
+```
+
+然后在 front matter 下方继续写 Markdown 正文。
 
 ## 发布到 GitHub Pages
 

@@ -1,0 +1,53 @@
+---
+layout: default
+---
+{% assign posts = site.posts | sort: "date" | reverse %}
+{% assign trimmed_content = content | strip %}
+
+<div class="blog-shell">
+  <section class="blog-hero">
+    <p class="eyebrow">Blog</p>
+    <h1>{{ page.hero_title | default: page.title }}</h1>
+    {% if page.hero_deck %}
+      <p class="hero-deck">{{ page.hero_deck }}</p>
+    {% endif %}
+  </section>
+
+  {% if trimmed_content != "" %}
+    <article class="paper-card prose">
+      {{ content }}
+    </article>
+  {% endif %}
+
+  <section class="list-section">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Archive</p>
+        <h2>全部文章</h2>
+      </div>
+    </div>
+
+    {% if posts.size > 0 %}
+      <div class="post-stream">
+        {% for post in posts %}
+          {% assign summary = post.description | default: post.excerpt | strip_html | strip_newlines %}
+          <article class="post-row">
+            <a class="post-row-link" href="{{ post.url | relative_url }}">
+              <div class="post-row-main">
+                <h3>{{ post.title }}</h3>
+                {% if summary != "" %}
+                  <p class="post-summary">{{ summary | truncate: 160 }}</p>
+                {% endif %}
+              </div>
+              <time class="post-date" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y-%m-%d" }}</time>
+            </a>
+          </article>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        这里还没有发布 blog 文章。你之后放进 `_posts/` 的文章会按时间出现在这里。
+      </div>
+    {% endif %}
+  </section>
+</div>

@@ -1,0 +1,26 @@
+---
+layout: default
+---
+{% assign ordered_chapters = site.chapters | sort: "book_order" %}
+{% assign first_chapter = ordered_chapters | first %}
+
+<div class="book-home-shell">
+  <section class="book-hero">
+    <p class="eyebrow">Book</p>
+    <h1>{{ page.hero_title | default: site.title }}</h1>
+    {% if page.hero_subtitle %}
+      <p class="book-hero-subtitle">{{ page.hero_subtitle }}</p>
+    {% endif %}
+    <p class="hero-deck">{{ page.hero_deck | default: site.description }}</p>
+    {% if first_chapter %}
+      <div class="book-hero-actions">
+        <a class="primary-action" href="{{ first_chapter.url | relative_url }}">从第一章开始</a>
+        <a class="secondary-action" href="#book-intro">阅读导言</a>
+      </div>
+    {% endif %}
+  </section>
+
+  <article class="paper-card prose" id="book-intro">
+    {{ content }}
+  </article>
+</div>
