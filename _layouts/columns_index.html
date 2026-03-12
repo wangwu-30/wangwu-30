@@ -1,0 +1,62 @@
+---
+layout: default
+---
+{% assign ordered_columns = site.data.columns | sort: "order" %}
+{% assign ordered_chapters = site.chapters | sort: "book_order" %}
+{% assign trimmed_content = content | strip %}
+
+<div class="columns-shell">
+  <section class="columns-hero">
+    <p class="eyebrow">专栏</p>
+    <h1>{{ page.hero_title | default: page.title }}</h1>
+    {% if page.hero_deck %}
+      <p class="hero-deck">{{ page.hero_deck }}</p>
+    {% endif %}
+  </section>
+
+  {% if trimmed_content != "" %}
+    <article class="paper-card prose">
+      {{ content }}
+    </article>
+  {% endif %}
+
+  <section class="list-section">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">在写</p>
+        <h2>全部专栏</h2>
+      </div>
+    </div>
+
+    <div class="column-grid">
+      {% for column in ordered_columns %}
+        {% assign first_chapter = nil %}
+        {% for chapter in ordered_chapters %}
+          {% assign chapter_column_id = chapter.column_id | default: site.default_column_id %}
+          {% if chapter_column_id == column.id and first_chapter == nil %}
+            {% assign first_chapter = chapter %}
+          {% endif %}
+        {% endfor %}
+        <article class="feature-card column-card">
+          <div class="feature-copy">
+            <p class="eyebrow">专栏</p>
+            <h2>{{ column.title }}</h2>
+            {% if column.brand %}
+              <p class="column-brand">{{ column.brand }}</p>
+            {% endif %}
+            <p>{{ column.description }}</p>
+            {% if column.style_summary %}
+              <p class="column-brand">风格：{{ column.style_summary }}</p>
+            {% endif %}
+          </div>
+          <div class="feature-actions">
+            <a class="primary-action" href="{{ column.permalink | relative_url }}">进入专栏</a>
+            {% if first_chapter %}
+              <a class="secondary-action" href="{{ first_chapter.url | relative_url }}">从开篇读起</a>
+            {% endif %}
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  </section>
+</div>

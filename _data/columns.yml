@@ -1,0 +1,9 @@
+- id: arche-and-the-weave
+  order: 1
+  title: 数字文明重构宣言
+  brand: Archē & The Weave
+  permalink: /columns/arche-and-the-weave/
+  description: 围绕代码退场、语义织网与数字立法展开的长线专栏。
+  sidebar_description: 按卷与章节继续阅读这组长线写作。
+  style_summary: 冷静、锋利、带有哲学张力。
+  style_guide: Archē & The Weave.md

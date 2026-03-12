@@ -325,21 +325,24 @@ a {
 
 .home-shell,
 .book-home-shell,
-.blog-shell {
+.blog-shell,
+.columns-shell {
   display: grid;
   gap: 1.25rem;
 }
 
 .home-hero,
 .book-hero,
-.blog-hero {
+.blog-hero,
+.columns-hero {
   padding-bottom: 1.35rem;
   border-bottom: 1px solid var(--line);
 }
 
 .home-hero h1,
 .book-hero h1,
-.blog-hero h1 {
+.blog-hero h1,
+.columns-hero h1 {
   font-size: clamp(2.55rem, 4vw, 4rem);
   font-weight: 700;
   line-height: 1.03;
@@ -365,6 +368,15 @@ a {
   padding: 1.35rem 1.45rem;
 }
 
+.column-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.column-card {
+  align-items: center;
+}
+
 .feature-copy h2 {
   font-size: 1.35rem;
   font-weight: 650;
@@ -376,6 +388,13 @@ a {
   max-width: 34rem;
   color: var(--ink-soft);
   line-height: 1.72;
+}
+
+.column-brand {
+  margin: 0.45rem 0 0;
+  color: var(--ink-faint);
+  font-size: 0.92rem;
+  letter-spacing: 0.01em;
 }
 
 .feature-actions,
@@ -510,6 +529,19 @@ a {
 .book-hero-subtitle {
   margin: 0.4rem 0 0;
   font-size: 1.08rem;
+}
+
+.style-summary {
+  display: inline-flex;
+  width: fit-content;
+  margin: 0.95rem 0 0;
+  padding: 0.34rem 0.72rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface-soft);
+  color: var(--ink-soft);
+  font-size: 0.84rem;
+  line-height: 1.4;
 }
 
 .chapter-article {
@@ -831,6 +863,7 @@ a {
   .home-hero h1,
   .book-hero h1,
   .blog-hero h1,
+  .columns-hero h1,
   .chapter-article h1,
   .post-header h1 {
     font-size: clamp(2rem, 10vw, 2.65rem);

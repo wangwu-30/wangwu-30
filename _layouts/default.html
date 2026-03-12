@@ -9,12 +9,24 @@
     <link rel="stylesheet" href="{{ '/assets/css/site.css' | relative_url }}">
   </head>
   {% assign current_section = page.section | default: "site" %}
-  {% assign show_book_sidebar = false %}
-  {% if current_section == "book" %}
-    {% assign show_book_sidebar = true %}
+  {% assign nav_section = page.nav_section | default: current_section %}
+  {% assign ordered_volumes = site.data.volumes | sort: "order" %}
+  {% assign ordered_chapters = site.chapters | sort: "book_order" %}
+  {% assign default_column = site.data.columns | where: "id", site.default_column_id | first %}
+  {% if default_column == nil %}
+    {% assign default_column = site.data.columns | first %}
+  {% endif %}
+  {% assign current_column_id = page.column_id | default: site.default_column_id | default: default_column.id %}
+  {% assign current_column = site.data.columns | where: "id", current_column_id | first %}
+  {% if current_column == nil %}
+    {% assign current_column = default_column %}
+  {% endif %}
+  {% assign current_column_home = current_column.permalink | default: '/columns/' %}
+  {% assign show_column_sidebar = false %}
+  {% if current_section == "columns" %}
+    {% assign show_column_sidebar = true %}
   {% endif %}
   <body class="section-{{ current_section }} page-{{ page.layout | default: 'default' | slugify }}">
-    {% assign ordered_volumes = site.data.volumes | sort: "order" %}
     <header class="site-header">
       <div class="site-header-inner">
         <a class="brand" href="{{ '/' | relative_url }}">
@@ -25,54 +37,67 @@
         </a>
 
         <nav class="site-primary-nav" aria-label="主导航">
-          <a class="primary-nav-link{% if current_section == 'home' %} is-active{% endif %}" href="{{ '/' | relative_url }}">首页</a>
-          <a class="primary-nav-link{% if current_section == 'book' %} is-active{% endif %}" href="{{ '/book/' | relative_url }}">书</a>
-          <a class="primary-nav-link{% if current_section == 'blog' %} is-active{% endif %}" href="{{ '/blog/' | relative_url }}">Blog</a>
+          <a class="primary-nav-link{% if nav_section == 'home' %} is-active{% endif %}" href="{{ '/' | relative_url }}">首页</a>
+          <a class="primary-nav-link{% if nav_section == 'columns' %} is-active{% endif %}" href="{{ '/columns/' | relative_url }}">专栏</a>
+          <a class="primary-nav-link{% if nav_section == 'blog' %} is-active{% endif %}" href="{{ '/blog/' | relative_url }}">Blog</a>
         </nav>
       </div>
     </header>
 
-    {% if show_book_sidebar %}
+    {% if show_column_sidebar %}
       <div class="site-frame">
         <aside class="sidebar">
           <div class="sidebar-intro">
-            <p class="eyebrow">The Book</p>
-            <h2>数字文明重构宣言</h2>
-            <p>按卷与章节继续阅读这本书。</p>
+            <p class="eyebrow">专栏</p>
+            <h2>{{ current_column.title }}</h2>
+            <p>{{ current_column.sidebar_description | default: current_column.description | default: "按卷与章节继续阅读这组长线写作。" }}</p>
           </div>
 
-          <a class="sidebar-home-link{% if page.url == '/book/' %} is-active{% endif %}" href="{{ '/book/' | relative_url }}">
-            <span>本书导言</span>
-            <span class="sidebar-home-link-note">Start here</span>
+          <a class="sidebar-home-link{% if page.url == current_column_home %} is-active{% endif %}" href="{{ current_column_home | relative_url }}">
+            <span>专栏导言</span>
+            <span class="sidebar-home-link-note">从这里开始</span>
           </a>
 
           <nav class="sidebar-nav" aria-label="章节目录">
+            {% assign intro_group_opened = false %}
             {% for volume in ordered_volumes %}
-              {% assign volume_chapters = site.chapters | where: "volume", volume.id | sort: "order" %}
-              {% assign open_group = false %}
-              {% if page.volume == volume.id %}
-                {% assign open_group = true %}
+              {% assign matching_chapters = 0 %}
+              {% for chapter in ordered_chapters %}
+                {% assign chapter_column_id = chapter.column_id | default: site.default_column_id %}
+                {% if chapter.volume == volume.id and chapter_column_id == current_column.id %}
+                  {% assign matching_chapters = matching_chapters | plus: 1 %}
+                {% endif %}
+              {% endfor %}
+              {% if matching_chapters > 0 %}
+                {% assign open_group = false %}
+                {% if page.volume == volume.id %}
+                  {% assign open_group = true %}
+                {% endif %}
+                {% if page.url == current_column_home and intro_group_opened == false %}
+                  {% assign open_group = true %}
+                  {% assign intro_group_opened = true %}
+                {% endif %}
+                <details class="sidebar-group" {% if open_group %}open{% endif %}>
+                  <summary>
+                    <span class="sidebar-group-label">{{ volume.label }}</span>
+                    <span class="sidebar-group-title">{{ volume.title }}</span>
+                    <span class="sidebar-group-subtitle">{{ volume.title_en }}</span>
+                  </summary>
+                  <ol class="chapter-list">
+                    {% for chapter in ordered_chapters %}
+                      {% assign chapter_column_id = chapter.column_id | default: site.default_column_id %}
+                      {% if chapter.volume == volume.id and chapter_column_id == current_column.id %}
+                        <li>
+                          <a class="chapter-link{% if chapter.url == page.url %} is-active{% endif %}" href="{{ chapter.url | relative_url }}">
+                            <span>{{ chapter.chapter_label }}：{{ chapter.title }}</span>
+                            <span class="chapter-link-subtitle">{{ chapter.title_en }}</span>
+                          </a>
+                        </li>
+                      {% endif %}
+                    {% endfor %}
+                  </ol>
+                </details>
               {% endif %}
-              {% if page.url == '/book/' and forloop.first %}
-                {% assign open_group = true %}
-              {% endif %}
-              <details class="sidebar-group" {% if open_group %}open{% endif %}>
-                <summary>
-                  <span class="sidebar-group-label">{{ volume.label }}</span>
-                  <span class="sidebar-group-title">{{ volume.title }}</span>
-                  <span class="sidebar-group-subtitle">{{ volume.title_en }}</span>
-                </summary>
-                <ol class="chapter-list">
-                  {% for chapter in volume_chapters %}
-                    <li>
-                      <a class="chapter-link{% if chapter.url == page.url %} is-active{% endif %}" href="{{ chapter.url | relative_url }}">
-                        <span>{{ chapter.chapter_label }}：{{ chapter.title }}</span>
-                        <span class="chapter-link-subtitle">{{ chapter.title_en }}</span>
-                      </a>
-                    </li>
-                  {% endfor %}
-                </ol>
-              </details>
             {% endfor %}
           </nav>
         </aside>
@@ -90,7 +115,7 @@
     {% endif %}
 
     <footer class="site-footer">
-      <p>Writing on software, systems, and digital civilization.</p>
+      <p>围绕软件、系统与数字文明的持续写作。</p>
     </footer>
   </body>
 </html>

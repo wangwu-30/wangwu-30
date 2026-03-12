@@ -2,18 +2,22 @@
 layout: default
 ---
 {% assign current_volume = site.data.volumes | where: "id", page.volume | first %}
+{% assign current_column_id = page.column_id | default: site.default_column_id %}
+{% assign current_column = site.data.columns | where: "id", current_column_id | first %}
 {% assign ordered_chapters = site.chapters | sort: "book_order" %}
 {% assign previous_chapter = nil %}
 {% assign next_chapter = nil %}
 
 {% for chapter in ordered_chapters %}
-  {% if chapter.book_order < page.book_order %}
+  {% assign chapter_column_id = chapter.column_id | default: site.default_column_id %}
+  {% if chapter_column_id == current_column_id and chapter.book_order < page.book_order %}
     {% assign previous_chapter = chapter %}
   {% endif %}
 {% endfor %}
 
 {% for chapter in ordered_chapters %}
-  {% if chapter.book_order > page.book_order and next_chapter == nil %}
+  {% assign chapter_column_id = chapter.column_id | default: site.default_column_id %}
+  {% if chapter_column_id == current_column_id and chapter.book_order > page.book_order and next_chapter == nil %}
     {% assign next_chapter = chapter %}
   {% endif %}
 {% endfor %}
@@ -21,6 +25,9 @@ layout: default
 <article class="chapter-article">
   <header class="chapter-header">
     <div class="chapter-kicker">
+      {% if current_column %}
+        <span>{{ current_column.title }}</span>
+      {% endif %}
       <span>{{ current_volume.label }} · {{ current_volume.title }}</span>
       <span class="latin">{{ current_volume.title_en }}</span>
     </div>
@@ -53,7 +60,7 @@ layout: default
 
   <section class="chapter-nav-wrap">
     <div class="chapter-nav-header">
-      <p class="eyebrow">Continue Reading</p>
+      <p class="eyebrow">继续</p>
       <h2>继续阅读</h2>
     </div>
 
