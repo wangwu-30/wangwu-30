@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="{{ page.lang | default: site.lang | default: 'zh-CN' }}">
+  <head>
+    {% assign meta_description = page.description | default: site.description %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% if page.title %}{{ page.title }} · {% endif %}{{ site.title }}</title>
+    <meta name="description" content="{{ meta_description | strip_html | strip_newlines | escape }}">
+    <link rel="stylesheet" href="{{ '/assets/css/site.css' | relative_url }}">
+  </head>
+  <body>
+    {% assign ordered_volumes = site.data.volumes | sort: "order" %}
+    <header class="site-header">
+      <a class="brand" href="{{ '/' | relative_url }}">
+        <span class="brand-mark">A</span>
+        <span class="brand-copy">
+          <strong>{{ site.title }}</strong>
+          <span>{{ site.tagline | default: site.description }}</span>
+        </span>
+      </a>
+    </header>
+
+    <div class="site-frame">
+      <aside class="sidebar">
+        <div class="sidebar-intro">
+          <p class="eyebrow">Book Map</p>
+          <h2>目录</h2>
+          <p>以卷为纲，以章为文。每一页都是可独立阅读的长文。</p>
+        </div>
+
+        <a class="sidebar-home-link{% if page.url == '/' %} is-active{% endif %}" href="{{ '/' | relative_url }}">
+          书籍首页
+        </a>
+
+        <nav class="sidebar-nav" aria-label="章节目录">
+          {% for volume in ordered_volumes %}
+            {% assign volume_chapters = site.chapters | where: "volume", volume.id | sort: "order" %}
+            {% assign open_group = false %}
+            {% if page.volume == volume.id %}
+              {% assign open_group = true %}
+            {% endif %}
+            {% if page.url == '/' and forloop.first %}
+              {% assign open_group = true %}
+            {% endif %}
+            <details class="sidebar-group" {% if open_group %}open{% endif %}>
+              <summary>
+                <span class="sidebar-group-label">{{ volume.label }}</span>
+                <span class="sidebar-group-title">{{ volume.title }}</span>
+                <span class="sidebar-group-subtitle">{{ volume.title_en }}</span>
+              </summary>
+              <ol class="chapter-list">
+                {% for chapter in volume_chapters %}
+                  <li>
+                    <a class="chapter-link{% if chapter.url == page.url %} is-active{% endif %}" href="{{ chapter.url | relative_url }}">
+                      <span>{{ chapter.chapter_label }}：{{ chapter.title }}</span>
+                      <span class="chapter-link-subtitle">{{ chapter.title_en }}</span>
+                    </a>
+                  </li>
+                {% endfor %}
+              </ol>
+            </details>
+          {% endfor %}
+        </nav>
+      </aside>
+
+      <main class="content-area">
+        {{ content }}
+      </main>
+    </div>
+
+    <footer class="site-footer">
+      <p>Markdown-first publishing for longform writing · {{ site.time | date: "%Y" }}</p>
+    </footer>
+  </body>
+</html>

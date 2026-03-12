@@ -1,0 +1,18 @@
+- id: source
+  order: 1
+  label: 第一卷
+  title: 原质卷
+  title_en: The Volume of Source
+  description: 从“代码作为对象”退场，到“结构作为现实”回归。
+- id: weave
+  order: 2
+  label: 第二卷
+  title: 织网卷
+  title_en: The Volume of Weave
+  description: 从个体 Agent 的幻觉、协作与记忆，走向一张可自我进化的语义网络。
+- id: singularity
+  order: 3
+  label: 第三卷
+  title: 终局卷
+  title_en: The Volume of Singularity
+  description: 当全球 Agent 网络跨过临界点，数字利维坦与立法者政治同时浮现。

@@ -1,0 +1,63 @@
+---
+layout: default
+---
+{% assign current_volume = site.data.volumes | where: "id", page.volume | first %}
+{% assign ordered_chapters = site.chapters | sort: "book_order" %}
+{% assign previous_chapter = nil %}
+{% assign next_chapter = nil %}
+
+{% for chapter in ordered_chapters %}
+  {% if chapter.book_order < page.book_order %}
+    {% assign previous_chapter = chapter %}
+  {% endif %}
+{% endfor %}
+
+{% for chapter in ordered_chapters %}
+  {% if chapter.book_order > page.book_order and next_chapter == nil %}
+    {% assign next_chapter = chapter %}
+  {% endif %}
+{% endfor %}
+
+<article class="chapter-article">
+  <header class="chapter-header">
+    <div class="chapter-kicker">
+      <span>{{ current_volume.label }} · {{ current_volume.title }}</span>
+      <span class="latin">{{ current_volume.title_en }}</span>
+    </div>
+    <h1>{{ page.chapter_label }}：{{ page.title }}</h1>
+    {% if page.title_en %}
+      <p class="chapter-subtitle">{{ page.title_en }}</p>
+    {% endif %}
+    {% if page.description %}
+      <p class="chapter-deck">{{ page.description }}</p>
+    {% endif %}
+    <div class="chapter-meta">
+      <span>Book Order {{ page.book_order }}</span>
+      {% if page.updated_at %}
+        <span>更新于 {{ page.updated_at }}</span>
+      {% endif %}
+    </div>
+  </header>
+
+  <section class="paper-card prose chapter-body">
+    {{ content }}
+  </section>
+
+  <nav class="chapter-nav" aria-label="章节导航">
+    {% if previous_chapter %}
+      <a class="chapter-nav-card" href="{{ previous_chapter.url | relative_url }}">
+        <span class="chapter-nav-label">上一篇</span>
+        <strong>{{ previous_chapter.chapter_label }}：{{ previous_chapter.title }}</strong>
+        <span>{{ previous_chapter.title_en }}</span>
+      </a>
+    {% endif %}
+
+    {% if next_chapter %}
+      <a class="chapter-nav-card next" href="{{ next_chapter.url | relative_url }}">
+        <span class="chapter-nav-label">下一篇</span>
+        <strong>{{ next_chapter.chapter_label }}：{{ next_chapter.title }}</strong>
+        <span>{{ next_chapter.title_en }}</span>
+      </a>
+    {% endif %}
+  </nav>
+</article>

@@ -1,0 +1,35 @@
+title: "Archē & The Weave"
+tagline: "数字文明重构宣言"
+description: "一本以 Markdown 维护、按卷章展开的数字文明长书。"
+lang: zh-CN
+timezone: Asia/Shanghai
+url: "https://wangwu-30.github.io"
+baseurl: "/wangwu-30"
+markdown: kramdown
+permalink: pretty
+
+collections:
+  chapters:
+    output: true
+    permalink: /book/:name/
+
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
+  - scope:
+      path: ""
+      type: chapters
+    values:
+      layout: chapter
+
+kramdown:
+  input: GFM
+  hard_wrap: false
+
+plugins: []
+
+exclude:
+  - README.md
+  - .github
