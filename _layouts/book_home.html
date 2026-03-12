@@ -22,9 +22,6 @@ layout: default
       <p class="book-hero-subtitle">{{ current_column.title }}</p>
     {% endif %}
     <p class="hero-deck">{{ page.hero_deck | default: site.description }}</p>
-    {% if current_column and current_column.style_summary %}
-      <p class="style-summary">风格：{{ current_column.style_summary }}</p>
-    {% endif %}
     {% if first_chapter %}
       <div class="book-hero-actions">
         <a class="primary-action" href="{{ first_chapter.url | relative_url }}">从开篇读起</a>

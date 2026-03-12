@@ -45,9 +45,6 @@ layout: default
               <p class="column-brand">{{ column.brand }}</p>
             {% endif %}
             <p>{{ column.description }}</p>
-            {% if column.style_summary %}
-              <p class="column-brand">风格：{{ column.style_summary }}</p>
-            {% endif %}
           </div>
           <div class="feature-actions">
             <a class="primary-action" href="{{ column.permalink | relative_url }}">进入专栏</a>
