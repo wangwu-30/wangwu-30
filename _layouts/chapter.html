@@ -66,24 +66,18 @@ layout: default
 
     <nav class="chapter-nav{{ nav_state }}" aria-label="章节导航">
     {% if previous_chapter %}
-      <a class="chapter-nav-card is-prev" href="{{ previous_chapter.url | relative_url }}">
-        <span class="chapter-nav-direction" aria-hidden="true">←</span>
-        <div class="chapter-nav-copy">
-          <span class="chapter-nav-label">上一篇</span>
-          <strong>{{ previous_chapter.chapter_label }}：{{ previous_chapter.title }}</strong>
-          <span>{{ previous_chapter.title_en }}</span>
-        </div>
+      <a class="chapter-nav-link is-prev" href="{{ previous_chapter.url | relative_url }}">
+        <span class="chapter-nav-meta">← 上一篇</span>
+        <strong>{{ previous_chapter.chapter_label }}：{{ previous_chapter.title }}</strong>
+        <span class="chapter-nav-link-subtitle">{{ previous_chapter.title_en }}</span>
       </a>
     {% endif %}
 
     {% if next_chapter %}
-      <a class="chapter-nav-card is-next" href="{{ next_chapter.url | relative_url }}">
-        <div class="chapter-nav-copy">
-          <span class="chapter-nav-label">下一篇</span>
-          <strong>{{ next_chapter.chapter_label }}：{{ next_chapter.title }}</strong>
-          <span>{{ next_chapter.title_en }}</span>
-        </div>
-        <span class="chapter-nav-direction" aria-hidden="true">→</span>
+      <a class="chapter-nav-link is-next" href="{{ next_chapter.url | relative_url }}">
+        <span class="chapter-nav-meta">下一篇 →</span>
+        <strong>{{ next_chapter.chapter_label }}：{{ next_chapter.title }}</strong>
+        <span class="chapter-nav-link-subtitle">{{ next_chapter.title_en }}</span>
       </a>
     {% endif %}
     </nav>
